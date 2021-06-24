@@ -5,6 +5,7 @@ import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import test.manu.healthcheck.PFCHealthCheck;
 import test.manu.modules.PFCModule;
 import test.manu.resource.IBANResource;
 
@@ -27,5 +28,6 @@ public class PFC extends Application<Configuration> {
     @Override
     public void run(Configuration configuration, Environment environment) {
         environment.jersey().register(guiceBundle.getInjector().getInstance(IBANResource.class));
+        environment.healthChecks().register("service", new PFCHealthCheck());
     }
 }
