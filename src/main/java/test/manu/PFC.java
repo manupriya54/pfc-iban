@@ -5,7 +5,6 @@ import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import test.manu.modules.DI;
 import test.manu.modules.PFCModule;
 import test.manu.resource.IBANResource;
 
@@ -27,7 +26,6 @@ public class PFC extends Application<Configuration> {
 
     @Override
     public void run(Configuration configuration, Environment environment) {
-        DI.di().initialize(guiceBundle.getInjector());
-        environment.jersey().register(DI.di().getInjector().getInstance(IBANResource.class));
+        environment.jersey().register(guiceBundle.getInjector().getInstance(IBANResource.class));
     }
 }

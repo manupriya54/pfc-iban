@@ -1,5 +1,6 @@
 package test.manu.validator;
 
+import test.manu.exception.ValidationException;
 import test.manu.model.ErrorResponse;
 import test.manu.model.IBANValidationResponse;
 
@@ -17,22 +18,39 @@ public class IBANValidator {
     }
 
     public IBANValidationResponse validate(String ibanNumber) {
-        if (ibanNumber.length() > 2 && countryIbanLength.containsKey(ibanNumber.substring(0, 2))) {
-            int length = Integer.parseInt((String)countryIbanLength.get(ibanNumber.substring(0, 2)));
-            if (ibanNumber.length() == length) {
-                if (ibanNumber.matches("[A-Za-z0-9]*")) {
-                    ibanNumber = ibanNumber.substring(4) + ibanNumber.substring(0, 4);
-                    String expandedIBAN = getExpandedIBAN(ibanNumber);
-                    if (mod97(expandedIBAN) == 1) {
-                        return new IBANValidationResponse();
-                    }
-                    return new IBANValidationResponse(new ErrorResponse("IBAN failed check digit test"));
-                }
-                return new IBANValidationResponse(new ErrorResponse("IBAN cannot contain special characters"));
-            }
-            return new IBANValidationResponse(new ErrorResponse("IBAN Length incorrect"));
+        try {
+            validateFormat(ibanNumber);
+            String countryCode = ibanNumber.substring(0, 2);
+            validateCountry(countryCode);
+            validateLength(ibanNumber, Integer.parseInt((String) countryIbanLength.get(countryCode)));
+            validateCheckDigit(ibanNumber);
+            return new IBANValidationResponse();
+        } catch (ValidationException validationException) {
+            return new IBANValidationResponse(new ErrorResponse(validationException.getMessage()));
         }
-        return new IBANValidationResponse(new ErrorResponse("Country Code not valid"));
+    }
+
+    private void validateFormat(String iban) throws ValidationException {
+        if (iban.length() < 2 || !iban.matches("[A-Za-z0-9]*"))
+            throw new ValidationException("IBAN cannot contain special characters");
+    }
+
+    private void validateCountry(String countryCode) throws ValidationException {
+        if (!countryIbanLength.containsKey(countryCode))
+            throw new ValidationException("Country Code not valid");
+    }
+
+    private void validateLength(String iban, int expectedLength) throws ValidationException {
+        if (iban.length() != expectedLength)
+            throw new ValidationException("IBAN Length incorrect");
+    }
+
+    private void validateCheckDigit(String iban) throws ValidationException {
+        iban = iban.substring(4) + iban.substring(0, 4);
+        String expandedIBAN = getExpandedIBAN(iban);
+        if (mod97(expandedIBAN) != 1) {
+            throw new ValidationException("IBAN failed check digit test");
+        }
     }
 
     private int mod97(String expandedIBAN) {

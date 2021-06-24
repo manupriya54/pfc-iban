@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class IBANResource {
 
-    private IBANValidator validator;
+    private final IBANValidator validator;
 
     @Inject
     public IBANResource(IBANValidator validator) {

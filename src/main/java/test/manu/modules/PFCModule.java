@@ -13,6 +13,6 @@ public class PFCModule extends AbstractModule {
     protected void configure() {
         bind(IBANResource.class);
         bind(IBANValidator.class);
-        bind(Properties.class).annotatedWith(Names.named("countryIbanLength")).toInstance(new IBANCountryLengthProvider().get());
+        bind(Properties.class).annotatedWith(Names.named("countryIbanLength")).toProvider(IBANCountryLengthProvider.class);
     }
 }
