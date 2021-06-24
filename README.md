@@ -20,3 +20,8 @@
 - From a REST client or Curl, make a `GET` request to 
 `http://localhost:8080/pfc/iban/{ibanNumber}/validate`
 
+####Code Structure
+- Application start - `test.manu.PFC`
+- Resource - `test.manu.resource.IBANResource`
+- Validation Logic - `test.manu.validator.IBANValidator`
+
