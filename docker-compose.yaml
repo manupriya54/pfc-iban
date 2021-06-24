@@ -1,0 +1,9 @@
+services:
+  iban-validator:
+    build: .
+    image: manu-java-docker:latest
+    container_name: "pfc-iban-validator"
+    restart: always
+    ports:
+      - 8080:8080
+      - 8081:8081
