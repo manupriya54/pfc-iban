@@ -10,7 +10,7 @@
     - git
     - docker
 - #### Steps:
-    - Clone the git repo `git clone `
+    - Clone the git repo `git clone https://github.com/manupriya54/pfc-iban.git`
     - Go to project directory
     - Run `docker-compose build`
     - Run `docker-compose up`
