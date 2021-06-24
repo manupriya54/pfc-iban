@@ -31,7 +31,9 @@ public class IBANValidator {
     }
 
     private void validateFormat(String iban) throws ValidationException {
-        if (iban.length() < 2 || !iban.matches("[A-Za-z0-9]*"))
+        if (iban.length() < 2 )
+            throw new ValidationException("IBAN Length incorrect");
+        if(!iban.matches("[A-Za-z0-9]*"))
             throw new ValidationException("IBAN cannot contain special characters");
     }
 
@@ -48,15 +50,17 @@ public class IBANValidator {
     private void validateCheckDigit(String iban) throws ValidationException {
         iban = iban.substring(4) + iban.substring(0, 4);
         String expandedIBAN = getExpandedIBAN(iban);
-        if (mod97(expandedIBAN) != 1) {
+        if (modulo97(expandedIBAN) != 1) {
             throw new ValidationException("IBAN failed check digit test");
         }
     }
 
-    private int mod97(String expandedIBAN) {
-        int mod = 0;
-        for (char ch : expandedIBAN.toCharArray()) {
-            mod = (mod * 10 + (int) ch - '0') % 97;
+    private int modulo97(String expandedIBAN) {
+        int i = 0, mod = 0;
+        while(i < expandedIBAN.length()) {
+            int j = Math.min(expandedIBAN.length(), i == 0 ? i+9 : i+7);
+            mod = Integer.parseInt(mod +expandedIBAN.substring(i, j)) % 97;
+            i = j;
         }
         return mod;
     }
