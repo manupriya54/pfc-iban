@@ -20,6 +20,11 @@
 - From a REST client or Curl, make a `GET` request to 
 `http://localhost:8080/pfc/iban/{ibanNumber}/validate`
 
+### Parsing the Response
+- Response model - `test.manu.model.IBANValidationResponse`
+- If IBAN is valid, expected response : `{"errorResponse":null,"valid":true}`
+- If IBAN is invalid, expected response : `{"errorResponse":{"errorMessage":"{Error Message}","exception":{Exception, if any}},"valid":false}`
+
 ### Code Structure
 - Application start - `test.manu.PFC`
 - Resource - `test.manu.resource.IBANResource`
